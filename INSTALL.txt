@@ -1,0 +1,16 @@
+
+***************
+Install pybdf
+***************
+
+Dependencies: 
+-----------
+- python >= 3.2.3
+- numpy
+
+
+On all platforms, after having unpacked the archive
+you can install pybdf by running:
+    python setup.py install
+
+On Windows, you can alternatively use the provided binary installer.

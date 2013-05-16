@@ -1,0 +1,16 @@
+
+include pybdf.py
+include setup.py
+include doc/*
+include doc/build/*
+include doc/build/doctrees/*
+include doc/build/html/*
+include doc/build/html/_modules/*
+include doc/build/html/_sources/*
+include doc/build/html/_static/*
+include doc/build/latex/*
+include doc/source/*
+include INSTALL.txt
+include README.txt
+include COPYING.txt
+include CHANGELOG.txt
