@@ -15,7 +15,7 @@ setup(name="pybdf",
       The software is currently in **ALPHA** status. 
       """,
       license="GPL v3",
-      url="none",
+      url="https://pypi.python.org/pypi/pybdf/",
       requires=['numpy (>=1.6.1)'],
       classifiers=[
           'Development Status :: 3 - Alpha',
