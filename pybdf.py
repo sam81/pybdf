@@ -2,20 +2,20 @@
 # -*- coding: utf-8 -*-
 
 #   Copyright (C) 2012-2013 Samuele Carcagno <sam.carcagno@gmail.com>
-#   This file is part of pybdf
+#   This file is part of fpybdf
 
-#    pybdf is free software: you can redistribute it and/or modify
+#    fpybdf is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 
-#    pybdf is distributed in the hope that it will be useful,
+#    fpybdf is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 
 #    You should have received a copy of the GNU General Public License
-#    along with pybdf.  If not, see <http://www.gnu.org/licenses/>.
+#    along with fpybdf.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 This module can be used to read the header and data from
@@ -31,8 +31,9 @@ This module can be used to read the header and data from
  >>> rec = bdf_rec.get_data_parallel() #read all data using multiprocess
 """
 import copy, multiprocessing, numpy
+import libforbdf
 from numpy import where, diff
-__version__ = "0.1.6"
+__version__ = "0.1.7"
 
 class bdfRecording:
     """
@@ -102,7 +103,6 @@ class bdfRecording:
     
     def __init__(self, fileName):
         self.fileName = fileName
-        #try:
         f = open(self.fileName, "rb")
         #except IOError:
         #    print("Could not open file. Check that that the file name\
@@ -220,46 +220,27 @@ class bdfRecording:
         
         f = open(self.fileName, "rb")
         recordsToRead = end - beginning
-        data = numpy.zeros((nChannelsToRead, recordsToRead*self.nSampRec[0]))
-        trigChan = numpy.zeros((recordsToRead*self.nSampRec[0]), dtype=numpy.int16) #just read them in, and in case user doesn't want them set to none later, skipping just slows things down because of loop
-        statusChan = numpy.zeros((recordsToRead*self.nSampRec[0]), dtype=numpy.int16)
-        i = 0
-        f.seek(self.nBytes + beginning*self.nSampRec[0]*3*self.nChannels)
-        for n in range(recordsToRead):
-            for c in range(self.nChannels):
-                if c != self.statusChanIdx:
-                    if c in channels:
-                        for s in range(self.nSampRec[c]):
-                            currChanIdx = channels.index(c)
-                            data[currChanIdx, n*self.nSampRec[c]+s] = int.from_bytes(f.read(3), byteorder='little', signed=True)
-                    else:
-                        currPos = f.tell()
-                        f.seek(currPos + self.nSampRec[c]*3)
-                else:
-                    if trig == True or status == True:
-                        for s in range(self.nSampRec[c]):
-                            trigChan[n*self.nSampRec[c]+s] = int.from_bytes(f.read(2), byteorder='little', signed=True)
-                            statusChan[n*self.nSampRec[c]+s] = int.from_bytes(f.read(1), byteorder='little', signed=True)
-                    else:
-                        currPos = f.tell()
-                        f.seek(currPos + self.nSampRec[c]*3)
-                              
-        f.close()
+        data, statchan = libforbdf.read_channels(self.fileName, beginning, end, self.nChannels, self.nSampRec, self.statusChanIdx)
+        data = numpy.array(data*self.scaleFactor[0], dtype=numpy.float32)
+        trigChan = statchan[0,:]
+        statusChan = statchan[1,:]
+        chanToDel = []
+        for c in range(self.nDataChannels):
+            if c not in channels:
+                chanToDel.append(c)
+        if len(chanToDel) > 0:
+            data = numpy.delete(data, numpy.array(chanToDel, dtype=numpy.int16), axis=0)
+     
         if trig == True:
-            trigChan = 2**8 + trigChan
             if norm_trig == True:
                 trigChan[where(diff(trigChan) == 0)[0]+1] = 0
         else:
             trigChan = None
         if status == True:
-            statusChan = 2**8 + statusChan
             if norm_status == True:
                 statusChan[where(diff(statusChan) == 0)[0]+1] = 0
         else:
             statusChan = None
-        
-        for c in range(nChannelsToRead):
-            data[c,:] = data[c,:] * self.scaleFactor[c]
 
         rec = {}
         rec['data'] = data
@@ -268,136 +249,3 @@ class bdfRecording:
         rec['chanLabels'] = chanLabels
         return rec
 
-    def get_data_parallel(self, beginning=0, end=None, channels=None, trig=True, status=True, norm_trig=True, norm_status=True):
-        """
-        Read the data from a bdfRecording object using the multiprocessing
-        module to exploit multicore machines.
-
-        Parameters
-        ----------
-        beginning : int
-            Start time of data chunk to read (seconds).
-        end : int
-            End time of data chunk to read (seconds).
-        channels : list of integers or strings
-            Channels to read. Both channel numbers, or channel names are accepted. Note that channel numbers are indexed starting from *zero*.
-        trig : boolean
-            If True, return the channel containing the triggers
-        status : boolean
-            If True, return the channel containing the status codes
-        norm_trig : boolean
-            If True, the trigger channel will only signal *changes* between one trigger status to the next. A trigger value that is equal to the previous one will be set to zero
-        norm_status : boolean
-            If True, the status channel will only signal *changes* between one status code to the next. A code value that is equal to the previous one will be set to zero
-
-        Returns
-        -------
-        rec : a dictionary with three keys
-           - data : an array of floats with dimenions nChannels X nDataPoints
-           - trigChan : an array of integers with the triggers in decimal format
-           - statusChan : an array of integers with the status codes in decimal format
-           - chanLabels : a list containing the labels of the channels that were read,
-             in the same order they are inserted in the data matrix
-        Examples
-        --------
-        >>> x = bdfRecording('res1.bdf')
-        >>> rec = x.get_data_parallel(channels=[0, 2], beginning=0, end=10)
-        """
-
-        trigChan = None #initialize to None in case user doesn't want them
-        statusChan = None
-        if end is None: #read all data
-            end = self.nDataRecords
-        if channels is None: #read all data channels
-            channels = copy.copy(self.dataChanLabels)
-        if len(channels) > self.nDataChannels:
-            print("Requested channels more than available channels. Exiting")
-            return
-        for i in range(len(channels)):
-            if isinstance(channels[i], str):
-                channels[i] = self.dataChanLabels.index(channels[i])
-        channels = sorted(channels)
-        chanLabels = []
-        for i in range(len(channels)):
-            chanLabels.append(self.dataChanLabels[channels[i]])
-        nChannelsToRead = len(channels)
-        #chList = []
-        pool = multiprocessing.Pool()
-        if trig == True or status == True:
-            nChanTot = nChannelsToRead+1
-        else:
-            nChanTot = nChannelsToRead
-        res_li = [0 for i in range(nChanTot)]
-            
-        for i in range(nChannelsToRead):
-            res_li[i] = pool.apply_async(readChannel, (self.fileName, channels[i], beginning, end, self.nChannels, self.nSampRec, self.scaleFactor, self.statusChanIdx, self.nBytes))
-        if trig == True or status == True:
-            res_li[i+1] = pool.apply_async(readChannel, (self.fileName, self.statusChanIdx, beginning, end, self.nChannels, self.nSampRec, self.scaleFactor, self.statusChanIdx, self.nBytes))
-        pool.close()
-        pool.join()
-        
-        
-        for i in range(nChanTot):
-            thisRes = res_li[i].get()
-            if i == 0:
-                data = numpy.zeros((nChannelsToRead, thisRes[1].shape[1]))
-            if thisRes[0] == self.statusChanIdx:
-                trigChan = thisRes[1][0,:]
-                statusChan = thisRes[1][1,:]
-            else:
-                channelPos = thisRes[0]
-                dataRow = channels.index(channelPos)
-                data[dataRow,:] = thisRes[1]
-        if trig == False:
-            trigChan = None
-        else:
-            if norm_trig == True:
-                trigChan[where(diff(trigChan) == 0)[0]+1] = 0
-        if status == False:
-            statusChan = None
-        else:
-            if norm_status == True:
-                statusChan[where(diff(statusChan) == 0)[0]+1] = 0
-        rec = {}
-        rec['data'] = data
-        rec['trigChan'] = trigChan
-        rec['statusChan'] = statusChan
-        rec['chanLabels'] = chanLabels
-        return rec
-
-
-def readChannel(fileName, channelNumber, beginning, end, nChannels, nSampRec, scaleFactor, statusChanIdx, nBytes):
-    f = open(fileName, "rb")
-    recordsToRead = end - beginning
-    if channelNumber == statusChanIdx:
-        data = numpy.zeros((2, recordsToRead*nSampRec[0]), dtype=numpy.int16)
-    else:
-        data = numpy.zeros((1, recordsToRead*nSampRec[0]))
-    
-    i = 0
-    f.seek(nBytes + beginning*nSampRec[0]*3*nChannels)
-    for n in range(recordsToRead):
-        for c in range(nChannels):
-            if c != statusChanIdx:
-                if c == channelNumber:
-                    for s in range(nSampRec[c]):
-                        data[0, n*nSampRec[c]+s] = int.from_bytes(f.read(3), byteorder='little', signed=True)
-                else:
-                    currPos = f.tell()
-                    f.seek(currPos + nSampRec[c]*3)
-            else:
-                if c == channelNumber:
-                    for s in range(nSampRec[c]):
-                        data[0, n*nSampRec[c]+s] = int.from_bytes(f.read(2), byteorder='little', signed=True)
-                        data[1, n*nSampRec[c]+s] = int.from_bytes(f.read(1), byteorder='little', signed=True)
-                else:
-                    currPos = f.tell()
-                    f.seek(currPos + nSampRec[c]*3)
-    f.close()
-    if channelNumber == statusChanIdx:
-        data = 2**8 + data
-    else:
-        data = data * scaleFactor[channelNumber]
-    dataL = [channelNumber, data]
-
-    return dataL

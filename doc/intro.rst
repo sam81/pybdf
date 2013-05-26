@@ -6,7 +6,7 @@ Introduction
 
 pybdf is a pure python library to read BIOSEMI 24-bit BDF files.
 While being slower than alternative C-based libraries like
-`BioSig <http://biosig.sourceforge.net/>`, it is very easy to install
+`BioSig <http://biosig.sourceforge.net/>`_, it is very easy to install
 and use.
 
 
@@ -23,9 +23,9 @@ The latest release of pybdf can be downloaded from the python package index:
 http://pypi.python.org/pypi/pybdf/
 
 For developers: the source code of pybdf is hosted on
-launchpad:
+github:
 
-https://launchpad.net/pybdf
+https://github.com/sam81/pybdf
 
 
 Installation
@@ -54,7 +54,7 @@ object as follows::
 
     bdf_rec = bdfRecording('res1.bdf') 
 
-you can then query the properties of therecording stored in the BDF header using the
+you can then query the properties of the recording stored in the BDF header using the
 appropriate functions, which are fully described :ref:`here <module-label>`.
 Some examples are shown below.
 
@@ -79,7 +79,7 @@ on multicore machines::
 
 either function returns the same result, that is a python dictionary
 with the following fields:
-- data : an array of floats with dimenions nChannels X nDataPoints
+- data : an array of floats with dimensions nChannels X nDataPoints
 - trigChan : an array of integers with the triggers in decimal format
 - statusChan : an array of integers with the status codes in decimal format
 For example, to get the value of the first sample of the recording,
@@ -97,7 +97,7 @@ cm in/out-of range, battery low/OK.
 Other usage examples are provided in the 'examples' directory inside
 the pybdf source archive.
 
-Beware that pybdf does not check that you have sufficeint RAM to 
+Beware that pybdf does not check that you have sufficient RAM to 
 read all the data in a bdf file. If you try to read a file that is
 too big for your hardware, you system may become slow or unresponsive.
 Initially try reading only a small amount of data, and check how much
@@ -110,7 +110,7 @@ functions. For example, to read the first 10 seconds of the recording, use::
 Bugs
 *****
 
-Please, report any bugs on Launchpad https://launchpad.net/pybdf
+Please, report any bugs on github https://github.com/sam81/pybdf/issues
 
 Known issues
 -------------
