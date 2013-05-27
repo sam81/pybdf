@@ -6,7 +6,7 @@ from numpy.distutils.core import Extension
 ext1 = Extension(name = 'libforbdf',
                  sources = ['libforbdf.f95'])
 setup(name="pybdf",    
-    version="0.1.7",
+    version="0.1.9",
       py_modules=["pybdf"],
       ext_modules = [ext1],
       author="Samuele Carcagno",

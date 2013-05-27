@@ -33,7 +33,7 @@ This module can be used to read the header and data from
 import copy, numpy
 import libforbdf
 from numpy import where, diff
-__version__ = "0.1.7"
+__version__ = "0.1.9"
 
 class bdfRecording:
     """
