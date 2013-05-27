@@ -4,11 +4,7 @@ Introduction
 ************
 :Author: Samuele Carcagno
 
-pybdf is a pure python library to read BIOSEMI 24-bit BDF files.
-While being slower than alternative C-based libraries like
-`BioSig <http://biosig.sourceforge.net/>`_, it is very easy to install
-and use.
-
+pybdf is a python library to read BIOSEMI 24-bit BDF files.
 
 
 *************************
@@ -34,16 +30,19 @@ Installation
 Requirements
 ------------
 To install pybdf you will need:
- - python >= 3.2
+ - python 
  - numpy 
+ - a fortran compiler
 
 On all platforms, after having unpacked the archive
 you can install pybdf by running::
 
     python setup.py install
 
-On Windows, you can alternatively use the binary installer, if provided.
-Note that pybdf has not been extensively tested on Windows.
+Note that pybdf has been built and tested only on Linux. I don't have
+enhough time to build and test binaries for Windows and Mac OS X, but if
+you try, please let me know how you get on with it.
+
 
 *****
 Usage
@@ -70,14 +69,11 @@ Get the channel labels::
 
     bdf_rec.chanLabels
 
-There are two functions to read in the data. The first function reads
-each channel sequentially::
-  rec = bdf_rec.get_data()
-the second function reads the channels in parallel, and is thus faster
-on multicore machines::
-  rec = bdf_rec.get_data_parallel() 
+To read in the data use the following method::
+  
+    rec = bdf_rec.get_data()
 
-either function returns the same result, that is a python dictionary
+this returns a python dictionary
 with the following fields:
 - data : an array of floats with dimensions nChannels X nDataPoints
 - trigChan : an array of integers with the triggers in decimal format
@@ -102,9 +98,9 @@ read all the data in a bdf file. If you try to read a file that is
 too big for your hardware, you system may become slow or unresponsive.
 Initially try reading only a small amount of data, and check how much
 RAM that uses. You can read only a portion of the data by passing the
-beginning and end arguments to the get_data() or get_data_parallel()
+beginning and end arguments to the get_data() 
 functions. For example, to read the first 10 seconds of the recording, use::
-    rec = bdf_rec.get_data_parallel(beginning=0, end=10) 
+    rec = bdf_rec.get_data(beginning=0, end=10) 
 
 *****
 Bugs
@@ -114,35 +110,8 @@ Please, report any bugs on github https://github.com/sam81/pybdf/issues
 
 Known issues
 -------------
-Currently there are problems with the get_data_parallel() function 
-on Windows. Please, use the get_data() function instead, or use Linux.
+None
 
-
-**********
-Benchmarks
-**********
-
-To give you an idea of the speed of pybdf, here are some rough
-benchmarks. 
-
-Using the get_data_parallel() function:
-
-========  ============  ============ ========== =============================    =========
-Channels  Duration (s)   Samp. Rate   File (MB)  CPU                              Time (s)
-========  ============  ============ ========== =============================    =========
-   9           931            2048     49.1     Intel Core i7-870                  10
-
-   9           1457           2048     76.8     Intel Core i7-870                  15
-
-   41          651            2048     156.4    Intel Core i7-870                  21
-
-   9           931            2048     49.1     Intel Core2 Quad Q6600             16
-
-   9           1457           2048     76.8     Intel Core2 Quad Q6600             24
-
-   41          651            2048     156.4    Intel Core2 Quad Q6600             31
-
-========  ============  ============ ========== =============================    =========
 
 .. _module-label:
 

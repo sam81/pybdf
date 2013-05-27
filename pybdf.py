@@ -2,20 +2,20 @@
 # -*- coding: utf-8 -*-
 
 #   Copyright (C) 2012-2013 Samuele Carcagno <sam.carcagno@gmail.com>
-#   This file is part of fpybdf
+#   This file is part of pybdf
 
-#    fpybdf is free software: you can redistribute it and/or modify
+#    pybdf is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 
-#    fpybdf is distributed in the hope that it will be useful,
+#    pybdf is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 
 #    You should have received a copy of the GNU General Public License
-#    along with fpybdf.  If not, see <http://www.gnu.org/licenses/>.
+#    along with pybdf.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 This module can be used to read the header and data from
@@ -30,7 +30,7 @@ This module can be used to read the header and data from
  >>> rec = bdf_rec.get_data(channels=[0, 1], beginning=0, end=10)
  >>> rec = bdf_rec.get_data_parallel() #read all data using multiprocess
 """
-import copy, multiprocessing, numpy
+import copy, numpy
 import libforbdf
 from numpy import where, diff
 __version__ = "0.1.7"
@@ -165,7 +165,7 @@ class bdfRecording:
         self.sampRate = list(numpy.array(numpy.round(numpy.array(self.nSampRec) / self.recordDuration), dtype=numpy.int16))
         f.close()
 
-    def get_data(self, beginning=0, end=None, channels=None, trig=True, status=True, norm_trig=True, norm_status=True):
+    def get_data(self, beginning=0, end=None, channels=None, event_table=True, trig_chan=False, status_chan=False):
 
         """
         Read the data from a bdfRecording object
@@ -178,23 +178,30 @@ class bdfRecording:
             End time of data chunk to read (seconds).
         channels : list of integers or strings
             Channels to read. Both channel numbers, or channel names are accepted. Note that channel numbers are indexed starting from *zero*.
-        trig : boolean
+        event_table : boolean
+            If True, return the triggers event table
+        trig_chan : boolean
             If True, return the channel containing the triggers
-        status : boolean
+        status_chan : boolean
             If True, return the channel containing the status codes
-        norm_trig : boolean
-            If True, the trigger channel will only signal *changes* between one trigger status to the next. A trigger value that is equal to the previous one will be set to zero
-        norm_status : boolean
-            If True, the status channel will only signal *changes* between one status code to the next. A code value that is equal to the previous one will be set to zero
+ 
 
         Returns
         -------
         rec : a dictionary with three keys
            - data : an array of floats with dimenions nChannels X nDataPoints
-           - trigChan : an array of integers with the triggers in decimal format
-           - statusChan : an array of integers with the status codes in decimal format
            - chanLabels : a list containing the labels of the channels that were read,
              in the same order they are inserted in the data matrix
+           - trigChan : an array of integers with the triggers in decimal format
+           - statusChan : an array of integers with the status codes in decimal format
+           - eventTable : a dictionary with the following keys
+              - code : array of ints
+                 The trigger codes
+              - idx : array of ints
+                 The indexes of the trigger codes
+              - dur : array of floats
+                 The duration of the triggers in seconds
+          
         
         Examples
         --------
@@ -230,22 +237,42 @@ class bdfRecording:
                 chanToDel.append(c)
         if len(chanToDel) > 0:
             data = numpy.delete(data, numpy.array(chanToDel, dtype=numpy.int16), axis=0)
-     
-        if trig == True:
-            if norm_trig == True:
-                trigChan[where(diff(trigChan) == 0)[0]+1] = 0
+        
+        #event table
+        evtTab = {}
+        if event_table == True:
+            trigst = copy.copy(trigChan)
+            trigst[numpy.where(numpy.diff(trigst) == 0)[0]+1] = 0
+            startPoints = numpy.where(trigst != 0)[0]
+
+            trige = numpy.diff(trigChan)
+            stopPoints = numpy.where(trige != 0)[0]
+            stopPoints = numpy.append(stopPoints, len(trigChan)-1)
+            trigDurs = (stopPoints - startPoints)/self.sampRate[0]
+
+            evt = trigst[numpy.where(trigst != 0)]
+
+           
+            evtTab['code'] = evt
+            evtTab['idx'] = startPoints
+            evtTab['dur'] = trigDurs
         else:
-            trigChan = None
-        if status == True:
-            if norm_status == True:
-                statusChan[where(diff(statusChan) == 0)[0]+1] = 0
-        else:
-            statusChan = None
+            evtTab['code'] = None
+            evtTab['idx'] = None
+            evtTab['dur'] = None
+            
 
         rec = {}
         rec['data'] = data
-        rec['trigChan'] = trigChan
-        rec['statusChan'] = statusChan
+        if trig_chan == True:
+            rec['trigChan'] = trigChan
+        else:
+            rec['trigChan'] = None
+        if status_chan == True:
+            rec['statusChan'] = statusChan
+        else:
+            rec['statusChan'] = None
         rec['chanLabels'] = chanLabels
+        rec['eventTable'] = evtTab
         return rec
 
