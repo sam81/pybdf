@@ -1,3 +1,9 @@
+pybdf (0.1.9) unstable; urgency=low
+
+  * New upstream release
+
+ -- Samuele Carcagno <sam.carcagno@gmail.com>  Mon, 27 May 2013 10:59:05 +0100
+
 pybdf (0.1.7) unstable; urgency=low
 
   * New upstream release
