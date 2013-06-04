@@ -33,7 +33,7 @@ This module can be used to read the header and data from
 import copy, numpy
 import libforbdf
 from numpy import concatenate, diff, where
-__version__ = "0.1.10"
+__version__ = "0.1.11"
 
 class bdfRecording:
     """
@@ -241,18 +241,10 @@ class bdfRecording:
         #event table
         evtTab = {}
         if event_table == True:
-            ## trigst = copy.copy(trigChan)
-            ## trigst[numpy.where(numpy.diff(trigst) == 0)[0]+1] = 0
-            ## startPoints = numpy.where(trigst != 0)[0]
             startPoints = concatenate(([0], where(diff(trigChan) != 0)[0] + 1))
             stopPoints = concatenate((where(diff(trigChan) != 0)[0], [len(trigChan)-1]))
-            ## trige = numpy.diff(trigChan)
-            ## stopPoints = numpy.where(trige != 0)[0]
-            ## stopPoints = numpy.append(stopPoints, len(trigChan)-1)
             trigDurs = (stopPoints - startPoints)/self.sampRate[0]
-
-            evt = trigChan[startPoints]#trigst[numpy.where(trigst != 0)]
-
+            evt = trigChan[startPoints]
            
             evtTab['code'] = evt
             evtTab['idx'] = startPoints
