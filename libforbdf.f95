@@ -34,8 +34,8 @@ subroutine read_channels(filename, starttime, endtime, nChannels, nSampRec, stat
      do ch=0,(nChannels-1)
         if (ch .NE. statusChanIdx) then
            do m=0,(nSampRec-1)
-              bitstr1 = TRANSFER(SOURCE=onechar//datchar(cpos)//datchar(cpos+1)//datchar(cpos+2), MOLD=1)
-              bitstr = RSHIFT(bitstr1, 24)
+              bitstr1 = TRANSFER(SOURCE=onechar//datchar(cpos)//datchar(cpos+1)//datchar(cpos+2), MOLD=int32)
+              bitstr = RSHIFT(bitstr1, 8)
               dats(ch, (k*nSampRec)+m) = bitstr 
               cpos = cpos+3
            end do
