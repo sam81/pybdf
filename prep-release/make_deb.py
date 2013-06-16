@@ -11,7 +11,7 @@ for i in range(len(ln)):
            ver = ln[i].strip().split('=')[1].strip()
            ver = ver[1:len(ver)-2]
 tarball_path = "../dist/pybdf-" + ver + ".tar.gz"
-buildpath = "../pkg_build/" + platform.linux_distribution()[0] + '_' + platform.linux_distribution()[1] + '_' + platform.uname()[4]
+buildpath = "../../pkg_build/" + platform.linux_distribution()[0] + '_' + platform.linux_distribution()[1] + '_' + platform.uname()[4]
 
 if os.path.exists(buildpath) == False:
     os.makedirs(buildpath)
