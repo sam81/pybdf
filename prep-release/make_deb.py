@@ -3,6 +3,7 @@
 
 import os, platform, time
 
+#get current version number from setup.py
 f = open('../setup.py', 'r')
 ln = f.readlines()
 f.close()
@@ -15,9 +16,12 @@ buildpath = "../../pkg_build/" + platform.linux_distribution()[0] + '_' + platfo
 
 if os.path.exists(buildpath) == False:
     os.makedirs(buildpath)
+
+#copy tarball to the build directory
 cmd = "cp " + tarball_path + " " + buildpath
 os.system(cmd)
 
+#update debian changelog
 f = open('debian/changelog', 'r')
 ln = f.readlines()
 f.close()
@@ -33,14 +37,18 @@ f = open('debian/changelog', 'w')
 ln = f.writelines(l0)
 f.close()
 
+#move to the build directory
 os.chdir(buildpath)
 
+#unpack the tarball
 cmd2 = "tar -xvf " + "pybdf-" + ver + ".tar.gz"
 os.system(cmd2)
 
-cmd3 = "cp -R " + "../../prep-release/debian/ ./pybdf-" + ver
+#copy debian files in the package build directory
+cmd3 = "cp -R " + "../../pybdf/prep-release/debian/ ./pybdf-" + ver
 os.system(cmd3)
 
-
+#move into package build directory
 os.chdir("pybdf-" + ver)
+#build the package
 os.system("dpkg-buildpackage -F")
