@@ -32,7 +32,7 @@ This module can be used to read the header and data from
 import copy, numpy
 import libforbdf
 from numpy import concatenate, diff, where
-__version__ = "0.1.13"
+__version__ = "0.1.14"
 
 class bdfRecording:
     """
@@ -191,8 +191,8 @@ class bdfRecording:
            - data : an array of floats with dimenions nChannels X nDataPoints
            - chanLabels : a list containing the labels of the channels that were read,
              in the same order they are inserted in the data matrix
-           - trigChan : an array of integers with the triggers in decimal format
-           - statusChan : an array of integers with the status codes in decimal format
+           - trigChannel : an array of integers with the triggers in decimal format
+           - statusChannel : an array of integers with the status codes in decimal format
            - eventTable : a dictionary with the following keys
               - code : array of ints
                  The trigger codes
@@ -228,8 +228,8 @@ class bdfRecording:
         recordsToRead = end - beginning
         data, statchan = libforbdf.read_channels(self.fileName, beginning, end, self.nChannels, self.nSampRec, self.statusChanIdx)
         data = numpy.array(data*self.scaleFactor[0], dtype=numpy.float32)
-        trigChan = statchan[0,:]
-        statusChan = statchan[1,:]
+        trigChannel = statchan[0,:]
+        statusChannel = statchan[1,:]
         chanToDel = []
         for c in range(self.nDataChannels):
             if c not in channels:
@@ -240,10 +240,10 @@ class bdfRecording:
         #event table
         evtTab = {}
         if eventTable == True:
-            startPoints = concatenate(([0], where(diff(trigChan) != 0)[0] + 1))
-            stopPoints = concatenate((where(diff(trigChan) != 0)[0], [len(trigChan)-1]))
+            startPoints = concatenate(([0], where(diff(trigChannel) != 0)[0] + 1))
+            stopPoints = concatenate((where(diff(trigChannel) != 0)[0], [len(trigChannel)-1]))
             trigDurs = (stopPoints - startPoints)/self.sampRate[0]
-            evt = trigChan[startPoints]
+            evt = trigChannel[startPoints]
            
             evtTab['code'] = evt
             evtTab['idx'] = startPoints
@@ -257,11 +257,11 @@ class bdfRecording:
         rec = {}
         rec['data'] = data
         if trigChan == True:
-            rec['trigChan'] = trigChan
+            rec['trigChan'] = trigChannel
         else:
             rec['trigChan'] = None
         if statusChan == True:
-            rec['statusChan'] = statusChan
+            rec['statusChan'] = statusChannel
         else:
             rec['statusChan'] = None
         rec['chanLabels'] = chanLabels
