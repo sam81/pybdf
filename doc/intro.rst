@@ -51,7 +51,7 @@ Usage
 To open a bdf file you need to create a bdfRecording
 object as follows::
 
-    bdf_rec = bdfRecording('res1.bdf') 
+    bdfRec = bdfRecording('res1.bdf') 
 
 you can then query the properties of the recording stored in the BDF header using the
 appropriate functions, which are fully described :ref:`here <module-label>`.
@@ -59,19 +59,19 @@ Some examples are shown below.
 
 Get the duration of the recording::
 
-    bdf_rec.recordDuration 
+    bdfRec.recordDuration 
 
 Get the sampling rate of each channel::
 
-    bdf_rec.sampRate 
+    bdfRec.sampRate 
 
 Get the channel labels::
 
-    bdf_rec.chanLabels
+    bdfRec.chanLabels
 
 To read in the data use the following method::
   
-    rec = bdf_rec.get_data()
+    rec = bdfRec.getData()
 
 this returns a python dictionary
 with the following fields:
@@ -98,9 +98,9 @@ read all the data in a bdf file. If you try to read a file that is
 too big for your hardware, you system may become slow or unresponsive.
 Initially try reading only a small amount of data, and check how much
 RAM that uses. You can read only a portion of the data by passing the
-beginning and end arguments to the get_data() 
+beginning and end arguments to the getData() 
 functions. For example, to read the first 10 seconds of the recording, use::
-    rec = bdf_rec.get_data(beginning=0, end=10) 
+    rec = bdfRec.getData(beginning=0, end=10) 
 
 *****
 Bugs

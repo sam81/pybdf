@@ -23,25 +23,24 @@ This module can be used to read the header and data from
 
  Examples
  --------
- >>> bdf_rec = bdfRecording('res1.bdf') #create bdfRecording object
- >>> bdf_rec.recordDuration #how many seconds the recording lasts
- >>> bdf_rec.sampRate #sampling rate for each channel
+ >>> bdfRec = bdfRecording('res1.bdf') #create bdfRecording object
+ >>> bdfRec.recordDuration #how many seconds the recording lasts
+ >>> bdfRec.sampRate #sampling rate for each channel
  >>> #read 10 seconds of data from the first two channels
- >>> rec = bdf_rec.get_data(channels=[0, 1], beginning=0, end=10)
- >>> rec = bdf_rec.get_data_parallel() #read all data using multiprocess
+ >>> rec = bdfRec.getData(channels=[0, 1], beginning=0, end=10)
 """
 import copy, numpy
 import libforbdf
 from numpy import concatenate, diff, where
-__version__ = "0.1.12"
+__version__ = "0.1.13"
 
 class bdfRecording:
     """
     Class for dealing with BIOSEMI 24-bit BDF files.
     A bdfRecording object is created with the following syntax::
-        >>> bdf_rec = bdfRecording('bdf_file.bdf')
+        >>> bdfRec = bdfRecording('bdf_file.bdf')
     This reads the BDF header, but not the data. You need to use
-    the get_data() or get_data_parallel() methods to read the data.
+    the getData() method to read the data.
     The full documentation of the BDF file format can be found here:
     http://www.biosemi.com/faq/file_format.htm
 
@@ -165,7 +164,7 @@ class bdfRecording:
         self.sampRate = list(numpy.array(numpy.round(numpy.array(self.nSampRec) / self.recordDuration), dtype=numpy.int16))
         f.close()
 
-    def get_data(self, beginning=0, end=None, channels=None, event_table=True, trig_chan=False, status_chan=False):
+    def getData(self, beginning=0, end=None, channels=None, eventTable=True, trigChan=False, statusChan=False):
 
         """
         Read the data from a bdfRecording object
@@ -178,11 +177,11 @@ class bdfRecording:
             End time of data chunk to read (seconds).
         channels : list of integers or strings
             Channels to read. Both channel numbers, or channel names are accepted. Note that channel numbers are indexed starting from *zero*.
-        event_table : boolean
+        eventTable : boolean
             If True, return the triggers event table
-        trig_chan : boolean
+        trigChan : boolean
             If True, return the channel containing the triggers
-        status_chan : boolean
+        statusChan : boolean
             If True, return the channel containing the status codes
  
 
@@ -206,7 +205,7 @@ class bdfRecording:
         Examples
         --------
         >>> x = bdfRecording('res1.bdf')
-        >>> rec = x.get_data(channels=[0, 2], beginning=0, end=10)
+        >>> rec = x.getData(channels=[0, 2], beginning=0, end=10)
         """
 
         if end is None: #read all data
@@ -240,7 +239,7 @@ class bdfRecording:
         
         #event table
         evtTab = {}
-        if event_table == True:
+        if eventTable == True:
             startPoints = concatenate(([0], where(diff(trigChan) != 0)[0] + 1))
             stopPoints = concatenate((where(diff(trigChan) != 0)[0], [len(trigChan)-1]))
             trigDurs = (stopPoints - startPoints)/self.sampRate[0]
@@ -257,11 +256,11 @@ class bdfRecording:
 
         rec = {}
         rec['data'] = data
-        if trig_chan == True:
+        if trigChan == True:
             rec['trigChan'] = trigChan
         else:
             rec['trigChan'] = None
-        if status_chan == True:
+        if statusChan == True:
             rec['statusChan'] = statusChan
         else:
             rec['statusChan'] = None
