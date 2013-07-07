@@ -77,7 +77,7 @@ this returns a python dictionary
 with the following fields:
 - data : an array of floats with dimensions nChannels X nDataPoints
 - trigChan : an array of integers with the triggers in decimal format
-- statusChan : an array of integers with the status codes in decimal format
+- sysCodeChan : an array of integers with the status codes in decimal format
 For example, to get the value of the first sample of the recording,
 in the first channel, you can type::
   rec['data'][0,0]
@@ -87,7 +87,7 @@ the same sample value, but for the second channel, is stored in::
     rec['data'][1,0]
 
 trigChan contains the triggers for the experimental conditions, in decimal
-format. The statusChan, on the other hand, contains system codes, like
+format. The sysCodeChan, on the other hand, contains system codes, like
 cm in/out-of range, battery low/OK. 
 
 Other usage examples are provided in the 'examples' directory inside

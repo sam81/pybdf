@@ -164,7 +164,7 @@ class bdfRecording:
         self.sampRate = list(numpy.array(numpy.round(numpy.array(self.nSampRec) / self.recordDuration), dtype=numpy.int16))
         f.close()
 
-    def getData(self, beginning=0, end=None, channels=None, eventTable=True, trigChan=False, statusChan=False):
+    def getData(self, beginning=0, end=None, channels=None, eventTable=True, trigChan=False, sysCodeChan=False):
 
         """
         Read the data from a bdfRecording object
@@ -181,8 +181,8 @@ class bdfRecording:
             If True, return the triggers event table
         trigChan : boolean
             If True, return the channel containing the triggers
-        statusChan : boolean
-            If True, return the channel containing the status codes
+        sysCodeChan : boolean
+            If True, return the channel containing the system codes
  
 
         Returns
@@ -192,7 +192,7 @@ class bdfRecording:
            - chanLabels : a list containing the labels of the channels that were read,
              in the same order they are inserted in the data matrix
            - trigChannel : an array of integers with the triggers in decimal format
-           - statusChannel : an array of integers with the status codes in decimal format
+           - sysCodeChannel : an array of integers with the system codes in decimal format
            - eventTable : a dictionary with the following keys
               - code : array of ints
                  The trigger codes
@@ -229,7 +229,7 @@ class bdfRecording:
         data, statchan = libforbdf.read_channels(self.fileName, beginning, end, self.nChannels, self.nSampRec, self.statusChanIdx)
         data = numpy.array(data*self.scaleFactor[0], dtype=numpy.float32)
         trigChannel = statchan[0,:]
-        statusChannel = statchan[1,:]
+        sysCodeChannel = statchan[1,:]
         chanToDel = []
         for c in range(self.nDataChannels):
             if c not in channels:
@@ -260,10 +260,10 @@ class bdfRecording:
             rec['trigChan'] = trigChannel
         else:
             rec['trigChan'] = None
-        if statusChan == True:
-            rec['statusChan'] = statusChannel
+        if sysCodeChan == True:
+            rec['sysCodeChan'] = statusChannel
         else:
-            rec['statusChan'] = None
+            rec['sysCodeChan'] = None
         rec['chanLabels'] = chanLabels
         rec['eventTable'] = evtTab
         return rec
