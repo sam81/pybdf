@@ -98,19 +98,21 @@ read all the data in a bdf file. If you try to read a file that is
 too big for your hardware, you system may become slow or unresponsive.
 Initially try reading only a small amount of data, and check how much
 RAM that uses. You can read only a portion of the data by passing the
-beginning and end arguments to the getData() 
-functions. For example, to read the first 10 seconds of the recording, use::
+beginning and end arguments to the getData() function. 
+For example, to read the first 10 seconds of the recording, use::
     rec = bdfRec.getData(beginning=0, end=10) 
 
-*****
+******
 Bugs
-*****
+******
 
 Please, report any bugs on github https://github.com/sam81/pybdf/issues
 
 Known issues
--------------
-None
+=============
+
+The filename or filepath of the BDF recording is currently limited
+to 256 characters. That should be sufficient for most purposes.
 
 
 .. _module-label:
