@@ -10,7 +10,7 @@ setup(name="pybdf",
       py_modules=["pybdf"],
       ext_modules = [ext1],
       author="Samuele Carcagno",
-      author_email="sam.carcagno@google.com;",
+      author_email="sam.carcagno@gmail.com;",
       description="pybdf is a python library for reading BIOSEMI bdf files.",
       long_description=\
       """
