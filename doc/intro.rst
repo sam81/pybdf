@@ -4,7 +4,8 @@ Introduction
 ************
 :Author: Samuele Carcagno
 
-pybdf is a python library to read BIOSEMI 24-bit BDF files.
+pybdf is a Python library to read electroencephalographic 
+recordings stored in the BIOSEMI 24-bit BDF format. 
 
 
 *************************
@@ -39,7 +40,7 @@ you can install pybdf by running::
 
     python setup.py install
 
-Note that pybdf has been built and tested only on Linux. I don't have
+Note that pybdf has been built and tested only on Linux with Python3. I don't have
 enhough time to build and test binaries for Windows and Mac OS X, but if
 you try, please let me know how you get on with it.
 
@@ -48,7 +49,7 @@ you try, please let me know how you get on with it.
 Usage
 *****
 
-To open a bdf file you need to create a bdfRecording
+To open a bdf file you need to create a `bdfRecording`
 object as follows::
 
     bdfRec = bdfRecording('res1.bdf') 
@@ -126,6 +127,7 @@ Initially try reading only a small amount of data, and check how much
 RAM that uses. You can read only a portion of the data by passing the
 beginning and end arguments to the getData() function. 
 For example, to read the first 10 seconds of the recording, use::
+
     rec = bdfRec.getData(beginning=0, end=10) 
 
 ******

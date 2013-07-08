@@ -19,10 +19,10 @@
 
 """
 This module can be used to read the header and data from
-24-bit BIOSEMI BDF files recorded with the ActiveTwo system.
+24-bit Biosemi BDF files recorded with the ActiveTwo system.
 
- Examples
- --------
+**Examples**
+
  >>> bdfRec = bdfRecording('res1.bdf') #create bdfRecording object
  >>> bdfRec.recordDuration #how many seconds the recording lasts
  >>> bdfRec.sampRate #sampling rate for each channel
@@ -34,7 +34,7 @@ import copy, numpy
 import libforbdf
 from numpy import concatenate, diff, where
 
-__version__ = "0.1.15"
+__version__ = "0.2.1"
 
 class bdfRecording:
     """
@@ -189,7 +189,7 @@ class bdfRecording:
 
         Returns
         -------
-        rec : a dictionary with three keys
+        rec : a dictionary with the following keys:
            - data : an array of floats with dimenions nChannels X nDataPoints
            - chanLabels : a list containing the labels of the channels that were read,
              in the same order they are inserted in the data matrix
