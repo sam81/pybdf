@@ -75,20 +75,46 @@ To read in the data use the following method::
 
 this returns a python dictionary
 with the following fields:
+
 - data : an array of floats with dimensions nChannels X nDataPoints
-- trigChan : an array of integers with the triggers in decimal format
-- sysCodeChan : an array of integers with the status codes in decimal format
+
+- eventTable : a dictionary with the codes, indexes and durations of triggers
+
+- chanLabels : a list with the channel labels
+
 For example, to get the value of the first sample of the recording,
 in the first channel, you can type::
-  rec['data'][0,0]
+
+    rec['data'][0,0]
 
 the same sample value, but for the second channel, is stored in::
   
     rec['data'][1,0]
 
-trigChan contains the triggers for the experimental conditions, in decimal
-format. The sysCodeChan, on the other hand, contains system codes, like
-cm in/out-of range, battery low/OK. 
+The `eventTable` contains a list of the trigger codes for the experimental conditions::
+
+    rec['eventTable`]['code']
+
+as well as a list of the sample numbers (or indexes) at which they started in the recording, and a list of their durations in seconds::
+
+    rec['eventTable']['idx']
+    rec['eventTable`]['dur']
+
+The ActiveTwo actually stores one trigger code for each recording sample rather than
+a list of trigger onsets and durations as the `eventTable` does. The "raw" trigger channel
+with one trigger code for each recording sample can be retrieved by passing the argument `trigChan = True`
+to the `getData()` function::
+
+    rec = bdfRec.getData(trigChan=True)
+
+the "raw" trigger channel will then be returned in `rec['trigChan']`.
+
+It is also possible to retrieve additional system codes (bits 16-23 of the
+status channel, see http://www.biosemi.com/faq/trigger_signals.htm), like CMS 
+in/out-of range, battery low/OK. These are returned in `rec['sysCodeChan']`
+when the `sysCodeChan = True` argument is passed to the `getData()` function.
+No particular effort has been made to decode these system codes.
+
 
 Other usage examples are provided in the 'examples' directory inside
 the pybdf source archive.

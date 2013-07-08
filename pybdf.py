@@ -29,9 +29,11 @@ This module can be used to read the header and data from
  >>> #read 10 seconds of data from the first two channels
  >>> rec = bdfRec.getData(channels=[0, 1], beginning=0, end=10)
 """
+from __future__ import nested_scopes, generators, division, absolute_import, with_statement, print_function, unicode_literals
 import copy, numpy
 import libforbdf
 from numpy import concatenate, diff, where
+
 __version__ = "0.1.15"
 
 class bdfRecording:

@@ -2,4 +2,4 @@
 
 export PYTHONPATH=$PYTHONPATH:../
 make html
-make latexpdf
+#make latexpdf
