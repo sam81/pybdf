@@ -3,14 +3,16 @@
 Install pybdf
 ***************
 
-Dependencies: 
------------
-- python >= 3.2.3
-- numpy
-
+To install pybdf you will need:
+ - python 
+ - numpy 
+ - a fortran compiler
 
 On all platforms, after having unpacked the archive
-you can install pybdf by running:
+you can install pybdf by running::
+
     python setup.py install
 
-On Windows, you can alternatively use the provided binary installer.
+Note that pybdf has been built and tested only on Linux with Python3. I don't have
+enhough time to build and test binaries for Windows and Mac OS X, but if
+you try, please let me know how you get on with it.

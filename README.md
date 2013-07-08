@@ -1,5 +1,5 @@
  
-pybdf is a python library to read BIOSEMI 24-bit BDF files.
+pybdf is a python library to read Biosemi 24-bit BDF files.
 
 Release builds are available on pypi <https://pypi.python.org/pypi/pybdf/>
 

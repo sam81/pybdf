@@ -10,7 +10,8 @@ include doc/_build/html/_sources/*
 include doc/_build/html/_static/*
 include doc/_build/latex/*
 include doc/source/*
+include examples/*.py
 include INSTALL.txt
-include README.txt
+include README.md
 include COPYING.txt
 include CHANGELOG.txt

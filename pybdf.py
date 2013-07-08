@@ -34,7 +34,7 @@ import copy, numpy
 import libforbdf
 from numpy import concatenate, diff, where
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 class bdfRecording:
     """
