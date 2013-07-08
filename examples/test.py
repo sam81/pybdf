@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
+
+from __future__ import nested_scopes, generators, division, absolute_import, with_statement, print_function, unicode_literals
 import numpy, os, subprocess, time
 import pybdf
 try:
@@ -18,44 +20,19 @@ fName1 = "Newtest17-256.bdf"
 fName2 = "Newtest17-2048.bdf"
 #let's see how long it takes
 
-t1 = time.time()
+
 rec1 = pybdf.bdfRecording(fName1)
 data1 = rec1.getData()
-t2 = time.time()
-print("**********************")
-print("with get_data() it takes,", t2-t1, "\n seconds to read the data in", fName1)
-print("--------------\n")
 
-t1 = time.time()
-rec1 = pybdf.bdfRecording(fName1)
-data1 = rec1.get_data_parallel()
-t2 = time.time()
-print("**********************")
-print("with get_data_parallel() it takes,", t2-t1, "\n seconds to read the data in", fName1)
-print("--------------\n")
-
-t1 = time.time()
 rec2 = pybdf.bdfRecording(fName2)
-data2 = rec1.get_data()
-t2 = time.time()
-print("**********************")
-print("with get_data() it takes,", t2-t1, "\n seconds to read the data in", fName2)
-print("--------------\n")
-
-t1 = time.time()
-rec2 = pybdf.bdfRecording(fName2)
-data2 = rec1.get_data_parallel()
-t2 = time.time()
-print("**********************")
-print("with get_data_parallel() it takes,", t2-t1, "\n seconds to read the data in", fName2)
-print("--------------\n")
+data2 = rec1.getData()
 
 #retrieve sampling rates (list of sampling rate of each channel)
 sampRate1 = rec1.sampRate
 sampRate2 = rec2.sampRate
 print("**********************")
-print("The sampling rate of, ", fName1, "is", sampRate1, "Hz")
-print("The sampling rate of, ", fName2, "is", sampRate2, "Hz")
+print("The sampling rate of, ", fName1, "is", sampRate1[0], "Hz")
+print("The sampling rate of, ", fName2, "is", sampRate2[0], "Hz")
 print("--------------\n")
 
 dur1 = rec1.duration
