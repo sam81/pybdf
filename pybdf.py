@@ -32,9 +32,9 @@ This module can be used to read the header and data from
 from __future__ import nested_scopes, generators, division, absolute_import, with_statement, print_function, unicode_literals
 import copy, numpy
 import libforbdf
-from numpy import concatenate, diff, where
+from numpy import concatenate, diff, float32, where
 
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 
 class bdfRecording:
     """
@@ -158,7 +158,7 @@ class bdfRecording:
         for i in range(self.nChannels):
             self.reserved.append(bytes.decode(f.read(32), 'ascii'))
         for i in range(self.nChannels):
-            self.scaleFactor.append((self.physMax[i] - self.physMin[i]) / (self.digMax[i] - self.digMin[i]))
+            self.scaleFactor.append(float32((self.physMax[i] - self.physMin[i]) / (self.digMax[i] - self.digMin[i])))
         self.statusChanIdx = self.chanLabels.index("Status")
         self.nDataChannels = self.nChannels - 1
         self.dataChanLabels = copy.copy(self.chanLabels)

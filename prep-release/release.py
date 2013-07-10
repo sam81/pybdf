@@ -24,7 +24,7 @@ def main(argv):
     f.close()
     builddate = datetime.datetime.now().strftime("%d-%b-%Y %H:%M")
     gittag = str(major_v) + '.' + str(minor_v) + '.' + str(minor_minor_v)
-    
+    print(gittag)
     f = open('setup.py', 'r')
     ln = f.readlines()
     f.close()
