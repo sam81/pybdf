@@ -158,7 +158,7 @@ class bdfRecording:
         for i in range(self.nChannels):
             self.reserved.append(bytes.decode(f.read(32), 'ascii'))
         for i in range(self.nChannels):
-            self.scaleFactor.append(float32((self.physMax[i] - self.physMin[i]) / (self.digMax[i] - self.digMin[i])))
+            self.scaleFactor.append((self.physMax[i] - self.physMin[i]) / (self.digMax[i] - self.digMin[i]))
         self.statusChanIdx = self.chanLabels.index("Status")
         self.nDataChannels = self.nChannels - 1
         self.dataChanLabels = copy.copy(self.chanLabels)
@@ -201,7 +201,7 @@ class bdfRecording:
               - idx : array of ints
                  The indexes of the trigger codes
               - dur : array of floats
-                 The duration of the triggers in seconds
+                 The duration of the triggers, in seconds
           
         
         Examples

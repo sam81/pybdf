@@ -2,9 +2,8 @@
 subroutine read_channels(filename, starttime, endtime, nChannels, nSampRec, statusChanIdx, dats, statchan)
   implicit none
   character(256), intent(in) :: filename
-  integer   :: ch, k, m, openerror, startpos, cpos, nChan, nRec, mypos, iofuz
+  integer   :: ch, k, m, openerror, startpos, cpos, nChan, nRec
   integer*4 :: bitstr, bitstr1, bitstr2, bitstr3, int32
-  !integer*2 :: int16
   character :: datchar(0:(nChannels*nSampRec*3*(endtime-starttime))-1)
   character :: onechar
   character*2 :: twochar
