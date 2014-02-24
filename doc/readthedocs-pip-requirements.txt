@@ -1,2 +1,1 @@
-numpydoc=>0.4
-numpy=>1.6
+napoleon
