@@ -28,7 +28,7 @@ setup(name="pybdf",
           'Operating System :: MacOS :: MacOS X',
           'Operating System :: Microsoft :: Windows',
           'Operating System :: POSIX',
-          'Programming Language :: Python :: 3.2',
+          'Programming Language :: Python :: 3',
           'Topic :: Scientific/Engineering :: Bio-Informatics'
           ]
       )
