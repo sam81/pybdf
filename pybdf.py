@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#   Copyright (C) 2012-2013 Samuele Carcagno <sam.carcagno@gmail.com>
+#   Copyright (C) 2012-2014 Samuele Carcagno <sam.carcagno@gmail.com>
 #   This file is part of pybdf
 
 #    pybdf is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ import copy, numpy
 import libforbdf
 from numpy import concatenate, diff, float32, where
 
-__version__ = "0.2.3"
+__version__ = "0.2.4"
 
 class bdfRecording:
     """
@@ -226,13 +226,14 @@ class bdfRecording:
             chanLabels.append(self.dataChanLabels[channels[i]])
         nChannelsToRead = len(channels)
         
-        f = open(self.fileName, "rb")
+        #f = open(self.fileName, "rb")
         recordsToRead = end - beginning
         data, statchan = libforbdf.read_channels(self.fileName, beginning, end, self.nChannels, self.nSampRec, self.statusChanIdx)
         data = numpy.array(data*self.scaleFactor[0], dtype=numpy.float32)
         trigChannel = statchan[0,:]
         sysCodeChannel = statchan[1,:]
         chanToDel = []
+        #f.close()
         for c in range(self.nDataChannels):
             if c not in channels:
                 chanToDel.append(c)
