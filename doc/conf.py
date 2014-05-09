@@ -13,7 +13,6 @@
 # serve to show the default.
 
 import sys, os
-import sys
 
 class Mock(object):
     def __init__(self, *args, **kwargs):

@@ -231,7 +231,8 @@ class bdfRecording:
         data, statchan = libforbdf.read_channels(self.fileName, beginning, end, self.nChannels, self.nSampRec, self.statusChanIdx)
         data = numpy.array(data*self.scaleFactor[0], dtype=numpy.float32)
         trigChannel = statchan[0,:]
-        sysCodeChannel = statchan[1,:]
+        trigChannel2 = statchan[1,:]
+        sysCodeChannel = statchan[2,:]
         chanToDel = []
         #f.close()
         for c in range(self.nDataChannels):
@@ -264,7 +265,7 @@ class bdfRecording:
         else:
             rec['trigChan'] = None
         if sysCodeChan == True:
-            rec['sysCodeChan'] = statusChannel
+            rec['sysCodeChan'] = sysCodeChannel#statusChannel
         else:
             rec['sysCodeChan'] = None
         rec['chanLabels'] = chanLabels

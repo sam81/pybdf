@@ -22,7 +22,7 @@ install-python%:
 	python$* setup.py install --root=$(CURDIR)/debian/tmp --install-layout=deb
 
 override_dh_auto_install: 
-	python3 setup.py install --root=debian/pybdf --install-layout=deb --install-lib=/usr/lib/python3/dist-packages/
+	python3 setup.py install --root=debian/python3-pybdf --install-layout=deb --install-lib=/usr/lib/python3/dist-packages/
 
 override_dh_pysupport:
 	
