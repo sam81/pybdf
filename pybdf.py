@@ -182,7 +182,7 @@ class bdfRecording:
         eventTable : boolean
             If True, return the triggers event table
         trigChan : boolean
-            If True, return the channel containing the triggers
+            If True, return the channel containing the triggers (trigger inputs 1-8 only)
         sysCodeChan : boolean
             If True, return the channel containing the system codes
  
@@ -193,7 +193,7 @@ class bdfRecording:
            - data : an array of floats with dimenions nChannels X nDataPoints
            - chanLabels : a list containing the labels of the channels that were read,
              in the same order they are inserted in the data matrix
-           - trigChannel : an array of integers with the triggers in decimal format
+           - trigChannel : an array of integers with the triggers in decimal format (trigger inputs 1-8 only)
            - sysCodeChannel : an array of integers with the system codes in decimal format
            - eventTable : a dictionary with the following keys
               - code : array of ints

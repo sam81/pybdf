@@ -108,7 +108,9 @@ to the `getData()` function::
 
     rec = bdfRec.getData(trigChan=True)
 
-the "raw" trigger channel will then be returned in `rec['trigChan']`.
+the "raw" trigger channel will then be returned in `rec['trigChan']`. 
+Please, note that `pybdf` currently reads only the trigger inputs 1-8 and disregards
+the trigger inputs 9-16. 
 
 It is also possible to retrieve additional system codes (bits 16-23 of the
 status channel, see http://www.biosemi.com/faq/trigger_signals.htm), like CMS 
