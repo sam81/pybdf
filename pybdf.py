@@ -30,7 +30,7 @@ This module can be used to read the header and data from
  >>> rec = bdfRec.getData(channels=[0, 1], beginning=0, end=10)
 """
 from __future__ import nested_scopes, generators, division, absolute_import, with_statement, print_function, unicode_literals
-import copy, numpy
+import copy, numpy, sys
 import libforbdf
 from numpy import concatenate, diff, float32, where
 
@@ -209,7 +209,11 @@ class bdfRecording:
         >>> x = bdfRecording('res1.bdf')
         >>> rec = x.getData(channels=[0, 2], beginning=0, end=10)
         """
-
+        if sys.version_info >= (3,0):
+            strName = str
+        else:
+            strName = unicode
+            
         if end is None: #read all data
             end = self.nDataRecords
         if channels is None: #read all data channels
@@ -218,7 +222,7 @@ class bdfRecording:
             print("Requested channels more than available channels. Exiting")
             return
         for i in range(len(channels)): #if some or all channels were given as labels convert them to indexes
-            if isinstance(channels[i], str):
+            if isinstance(channels[i], strName):
                 channels[i] = self.dataChanLabels.index(channels[i])
         channels = sorted(channels)
         chanLabels = []
