@@ -48,7 +48,7 @@ if matplotlib_available == True:
     fig1 = plt.figure(figsize=(7, 6), dpi=100)
     
     for i in range(2): #plot first 3 channels
-        ax = fig1.add_subplot(2,1,i)
+        ax = fig1.add_subplot(2,1,i+1)
         ax.plot(time_array1, dataMatrix1[i,:])
         ax.set_ylabel('Amplitude ($\mu V$)')
         ax.set_xlabel('Time (s)')
@@ -57,7 +57,7 @@ if matplotlib_available == True:
 #check that there is a 3-Hz signal in the dataset
 n = len(dataMatrix1[0])
 p = numpy.fft.fft(dataMatrix1[0])
-nUniquePts = numpy.ceil((n+1)/2)
+nUniquePts = int(numpy.ceil((n+1)/2))
 p = p[0:nUniquePts]
 p = numpy.abs(p)
 p = p / n
